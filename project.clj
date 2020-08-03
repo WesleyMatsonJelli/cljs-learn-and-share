@@ -11,7 +11,7 @@
                  [re-com "2.8.0"]]
 
   :plugins [[lein-shadow "0.2.0"]
-            
+            [lein-cljfmt "0.6.8"]
             [lein-shell "0.5.0"]]
 
   :min-lein-version "2.9.0"
@@ -22,13 +22,12 @@
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
-
   :shell {:commands {"open" {:windows ["cmd" "/c" "start"]
                              :macosx  "open"
                              :linux   "xdg-open"}}}
 
   :shadow-cljs {:nrepl {:port 8777}
-                
+
                 :builds {:app {:target :browser
                                :output-dir "resources/public/js/compiled"
                                :asset-path "/js/compiled"
@@ -42,8 +41,7 @@
                                           {day8.re-frame.tracing day8.re-frame.tracing-stubs}}}
 
                                :devtools {:http-root "resources/public"
-                                          :http-port 8280
-                                          }}}}
+                                          :http-port 8280}}}}
 
   :aliases {"dev"          ["with-profile" "dev" "do"
                             ["shadow" "watch" "app"]]
@@ -62,8 +60,6 @@
                    [day8.re-frame/re-frame-10x "0.7.0"]]
     :source-paths ["dev"]}
 
-   :prod {}
-   
-}
+   :prod {}}
 
   :prep-tasks [])

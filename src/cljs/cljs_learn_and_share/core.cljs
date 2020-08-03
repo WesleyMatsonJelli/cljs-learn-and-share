@@ -4,9 +4,7 @@
    [re-frame.core :as re-frame]
    [cljs-learn-and-share.events :as events]
    [cljs-learn-and-share.views :as views]
-   [cljs-learn-and-share.config :as config]
-   ))
-
+   [cljs-learn-and-share.config :as config]))
 
 (defn dev-setup []
   (when config/debug?
