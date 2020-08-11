@@ -10,3 +10,9 @@
  :posts
  (fn [db _]
    (:posts db)))
+
+(re-frame/reg-sub
+ :post-count
+ :<- [:posts]
+ (fn [posts _]
+   (count posts)))

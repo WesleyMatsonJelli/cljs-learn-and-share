@@ -7,6 +7,7 @@
             [cljs-learn-and-share.home.events]
             [cljs-learn-and-share.home.subs]
             [cljs-learn-and-share.home.views :refer [home-page]]
+            [cljs-learn-and-share.posts.views :refer [post-details-page]]
             [cljs-learn-and-share.about.views :refer [about-page]]))
 
 (re-frame/reg-sub
@@ -38,7 +39,7 @@
              :link-text "Resources"}]
    ["posts/:id" {:name :routes/post-details
                  :navbar-excluded? true
-                 :view (fn [] [:div.content "Post Details"])}]])
+                 :view post-details-page}]])
                          
 (def router
   (reitit-fe/router routes))

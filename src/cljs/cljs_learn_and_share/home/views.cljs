@@ -12,6 +12,7 @@
 (defn home-page []
   [:div.container
    [:h2.title "Home"]
+   [:h3.title (str "Post Count: " @(re-frame/subscribe [:post-count]))]
    (if @(re-frame/subscribe [:loading-posts])
      [:div.box>progress.progress.is-small.is-info]
      (for [post @(re-frame/subscribe [:posts])]

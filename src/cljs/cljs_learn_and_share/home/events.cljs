@@ -3,17 +3,19 @@
             [day8.re-frame.http-fx]
             [ajax.core :refer [json-request-format json-response-format]]))
 
+(defn get-posts-fn [{:keys [db]} _]
+  (if (:posts db)
+    {}
+    {:http-xhrio
+     {:method :get
+      :uri "https://jsonplaceholder.typicode.com/posts"
+      :on-success [:posts-arrived]
+      :response-format (json-response-format {:keywords? true})}
+     :db (assoc-in db [:loading :posts] true)}))
+
 (re-frame/reg-event-fx
  :get-posts
- (fn [{:keys [db]} _]
-   (if (:posts db)
-     {}
-     {:http-xhrio
-      {:method :get
-       :uri "https://jsonplaceholder.typicode.com/posts"
-       :on-success [:posts-arrived]
-       :response-format (json-response-format {:keywords? true})}
-      :db (assoc-in db [:loading :posts] true)})))
+ get-posts-fn)
 
 (re-frame/reg-event-db
  :posts-arrived
@@ -21,3 +23,6 @@
    (-> db
        (assoc :posts posts)
        (assoc-in [:loading :posts] false))))
+
+(comment (get-posts-fn {:db {:posts [{:a 1}]}}
+                       []))
