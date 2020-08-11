@@ -23,8 +23,8 @@
        [:p.title "Other Links"]
        [:div.content
         [:ul
-         [:li [:a {:href "https://medium.com/dailyjs/a-realworld-comparison-of-front-end-frameworks-2020-4e50655fe4c1"}
-               "Real World App framework comparison"]]
+         [:li>a {:href "https://medium.com/dailyjs/a-realworld-comparison-of-front-end-frameworks-2020-4e50655fe4c1"}
+          "Real World App framework comparison"]
          [:li [:a {:href "https://jsonplaceholder.typicode.com/guide.html"}
                "JSON Placeholder API"]]]]]]]]])
           

@@ -1,5 +1,6 @@
 (ns cljs-learn-and-share.router
   (:require [reitit.core :as reitit]
+            [reagent.core :as reagent]
             [re-frame.core :as re-frame]
             [reitit.frontend :as reitit-fe]
             [reitit.frontend.easy :as reitit-feasy]
@@ -45,23 +46,35 @@
 (defn init-router! []
   (println "Initializing routes")
   (reitit-feasy/start! router on-navigate {:use-fragment true}))
-           
+
+(defn navbar []
+  (reagent/with-let [menu-active? (reagent/atom false)]
+    (let [current-route @(re-frame/subscribe [:routes/current-route])]
+      [:nav.navbar
+       [:div.navbar-brand
+        [:span.navbar-item "Learn and Share"]
+        [:a.navbar-burger.burger
+         {:on-click (fn [_] (swap! menu-active? not))
+          :class (when @menu-active? "is-active")}
+         [:span {:aria-hidden true}]
+         [:span {:aria-hidden true}]
+         [:span {:aria-hidden true}]]]
+       [:div.navbar-menu {:class (when @menu-active? "is-active")}
+        [:div.navbar-start
+         (for [route-name (reitit/route-names router)
+               :let       [route (reitit/match-by-name router route-name)
+                           text (-> route :data :link-text)]
+               :when (not (-> route :data :navbar-excluded?))]
+           ^{:key route-name}
+           [:a.navbar-item {:href (reitit-feasy/href route-name)
+                            :class (when (= route-name (-> current-route :data :name))
+                                     "is-active")}
+            text])]]])))
+       
 (defn router-component []
   (let [current-route @(re-frame/subscribe [:routes/current-route])]
-    (println current-route)
-    [:<>
-     [:nav.navbar
-      [:div.navbar-brand>div.navbar-item [:a {:href (reitit-feasy/href :routes/home)} "Learn and Share"]]
-      [:div.navbar-menu
-       (for [route-name (reitit/route-names router)
-             :let       [route (reitit/match-by-name router route-name)
-                         text (-> route :data :link-text)]
-             :when (not (-> route :data :navbar-excluded?))]
-         ^{:key route-name}
-         [:a.navbar-item {:href (reitit-feasy/href route-name)
-                          :class (when (= route-name (-> current-route :data :name))
-                                   "is-active")}
-          text])]]
+    [:div
+     [:header [navbar]]
      (if current-route
        [(-> current-route :data :view)]
        [:div "Not Found"])]))
