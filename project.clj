@@ -7,6 +7,9 @@
                  [thheller/shadow-cljs "2.10.17"]
                  [reagent "0.10.0"]
                  [re-frame "1.0.0"]
+                 [day8.re-frame/http-fx "0.2.1"]
+                 [metosin/reitit "0.5.5"]
+                 [metosin/reitit-frontend "0.5.5"]
                  [day8.re-frame/tracing "0.6.0"]
                  [re-com "2.8.0"]]
 
