@@ -3,6 +3,8 @@
             [re-frame.core :as re-frame]
             [reitit.frontend :as reitit-fe]
             [reitit.frontend.easy :as reitit-feasy]
+            [cljs-learn-and-share.home.events]
+            [cljs-learn-and-share.home.subs]
             [cljs-learn-and-share.home.views :refer [home-page]]
             [cljs-learn-and-share.about.views :refer [about-page]]))
 
@@ -11,10 +13,14 @@
  (fn [db _]
    (:routes/current-route db)))
 
-(re-frame/reg-event-db
+(re-frame/reg-event-fx
  :routes/navigated
- (fn [db [_ new-match]]
-   (assoc db :routes/current-route new-match)))
+ (fn [cofx [_ new-match]]
+   (let [arrival-effects (-> new-match :data :on-arrive)]
+     (cond-> {:db (assoc (:db cofx)
+                         :routes/current-route new-match)}
+       arrival-effects
+       (assoc :dispatch-n arrival-effects)))))
 
 (defn- on-navigate [new-match]
   (when new-match
@@ -24,12 +30,15 @@
   ["/"
    ["" {:name :routes/home
         :view home-page
-        :link-text "Home"}]
+        :link-text "Home"
+        :on-arrive [[:get-posts]]}]
    ["about" {:name :routes/about
              :view about-page
-             :link-text "Resources"}]])
-   
-
+             :link-text "Resources"}]
+   ["posts/:id" {:name :routes/post-details
+                 :navbar-excluded? true
+                 :view (fn [] [:div.content "Post Details"])}]])
+                         
 (def router
   (reitit-fe/router routes))
 
@@ -46,7 +55,8 @@
       [:div.navbar-menu
        (for [route-name (reitit/route-names router)
              :let       [route (reitit/match-by-name router route-name)
-                         text (-> route :data :link-text)]]
+                         text (-> route :data :link-text)]
+             :when (not (-> route :data :navbar-excluded?))]
          ^{:key route-name}
          [:a.navbar-item {:href (reitit-feasy/href route-name)
                           :class (when (= route-name (-> current-route :data :name))
